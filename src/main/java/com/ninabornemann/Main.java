@@ -1,5 +1,8 @@
 package com.ninabornemann;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,11 +34,37 @@ public class Main {
         List<Boolean> collected = numberList.stream()
                 .map(i -> i % 2 == 0)
                 .toList();
+
+        try {
+            Files.lines(Path.of("students.csv"))
+                    .skip(1)
+                    .distinct()
+                    .filter( s -> !s.isEmpty())
+                    .peek(s -> System.out.println(s))
+                    .map(s -> {
+                        String[] values = s.split(",");
+                        Student student = new Student();
+                        student.id = Integer.parseInt(values[0]);
+                        student.name = values[1];
+                        student.postalCode = Integer.parseInt(values[2]);
+                        student.age = Integer.parseInt(values[3]);
+                        return student;
+                    })
+                    .peek(student -> System.out.println(student))
+                    .toList();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
     }
 
     public static boolean isEven(Integer i) {
         return i % 2 == 0;
     }
+
+
 }
 
 
